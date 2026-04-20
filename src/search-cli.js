@@ -2,6 +2,20 @@
 
 const { Command } = require('commander');
 const axios = require('axios');
+const dayjs = require('dayjs');
+const relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
+
+function addMtimeReadable(data) {
+  if (data && Array.isArray(data.results)) {
+    data.results.forEach(res => {
+      if (typeof res.mtime === 'number') {
+        res.mtime_readable = dayjs(res.mtime * 1000).fromNow();
+      }
+    });
+  }
+  return data;
+}
 
 const DEFAULT_LIMIT = 3;
 const DEFAULT_MARGIN = 20;
@@ -41,7 +55,7 @@ program
       if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
 
       const response = await axios.post(`${endpoint}/api/v1/search/fts`, payload);
-      console.log(JSON.stringify(response.data, null, 2));
+      console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
       process.exit(1);
@@ -69,7 +83,7 @@ program
       if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
 
       const response = await axios.post(`${endpoint}/api/v1/search/vec`, payload);
-      console.log(JSON.stringify(response.data, null, 2));
+      console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
       process.exit(1);
@@ -99,7 +113,7 @@ program
       if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
 
       const response = await axios.post(`${endpoint}/api/v1/search/hybrid`, payload);
-      console.log(JSON.stringify(response.data, null, 2));
+      console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
       process.exit(1);
@@ -113,7 +127,7 @@ program
     const { endpoint } = program.opts();
     try {
       const response = await axios.post(`${endpoint}/api/v1/index_all`);
-      console.log(JSON.stringify(response.data, null, 2));
+      console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
       process.exit(1);
@@ -129,7 +143,7 @@ tags
     const { endpoint } = program.opts();
     try {
       const response = await axios.post(`${endpoint}/api/v1/tags/lookup`, { paths });
-      console.log(JSON.stringify(response.data, null, 2));
+      console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
       process.exit(1);
@@ -146,7 +160,7 @@ tags
         path,
         path_tags: path_tags || []
       });
-      console.log(JSON.stringify(response.data, null, 2));
+      console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
       process.exit(1);
@@ -160,7 +174,7 @@ program
     const { endpoint } = program.opts();
     try {
       const response = await axios.get(`${endpoint}/api/v1/status`);
-      console.log(JSON.stringify(response.data, null, 2));
+      console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
       process.exit(1);
