@@ -9,11 +9,15 @@ const DEFAULT_LENGTH = 200;
 
 const program = new Command();
 
+const defaultEndpoint = process.env.LOCAL_SEARCH_CLI_ENDPOINT
+  ? process.env.LOCAL_SEARCH_CLI_ENDPOINT
+  : 'http://localhost:8000';
+
 program
   .name('search-cli')
   .description('Local search CLI')
   .version('1.0.0')
-  .option('-u, --url <url>', 'Base URL of the search engine API', 'http://localhost:8000');
+  .option('-e, --endpoint <endpoint>', 'Base URL of the search engine API', defaultEndpoint);
 
 
 program
@@ -23,9 +27,9 @@ program
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-length <length>', 'Snippet length', (val) => parseInt(val, 10), DEFAULT_LENGTH)
   .action(async (query, options) => {
-    const { url } = program.opts();
+    const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${url}/api/v1/search/fts`, {
+      const response = await axios.post(`${endpoint}/api/v1/search/fts`, {
         query,
         tags: options.tags || null,
         limit: options.limit,
@@ -45,9 +49,9 @@ program
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-margin <margin>', 'Snippet margin', (val) => parseInt(val, 10), DEFAULT_MARGIN)
   .action(async (query, options) => {
-    const { url } = program.opts();
+    const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${url}/api/v1/search/vec`, {
+      const response = await axios.post(`${endpoint}/api/v1/search/vec`, {
         query,
         tags: options.tags || null,
         limit: options.limit,
@@ -68,9 +72,9 @@ program
   .option('-s, --snippet-margin <margin>', 'Snippet margin', (val) => parseInt(val, 10), DEFAULT_MARGIN)
   .option('-L, --snippet-length <length>', 'Snippet length', (val) => parseInt(val, 10), DEFAULT_LENGTH)
   .action(async (query, options) => {
-    const { url } = program.opts();
+    const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${url}/api/v1/search/hybrid`, {
+      const response = await axios.post(`${endpoint}/api/v1/search/hybrid`, {
         query,
         tags: options.tags || null,
         limit: options.limit,
@@ -88,9 +92,9 @@ program
   .command('index')
   .description('Trigger full re-indexing')
   .action(async () => {
-    const { url } = program.opts();
+    const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${url}/api/v1/index_all`);
+      const response = await axios.post(`${endpoint}/api/v1/index_all`);
       console.log(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
@@ -104,9 +108,9 @@ tags
   .command('lookup <paths...>')
   .description('Lookup tags for one or more file paths')
   .action(async (paths) => {
-    const { url } = program.opts();
+    const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${url}/api/v1/tags/lookup`, { paths });
+      const response = await axios.post(`${endpoint}/api/v1/tags/lookup`, { paths });
       console.log(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
@@ -118,9 +122,9 @@ tags
   .command('update <path> [path_tags...]')
   .description('Update tags for a specific file path')
   .action(async (path, path_tags) => {
-    const { url } = program.opts();
+    const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${url}/api/v1/tags/update`, {
+      const response = await axios.post(`${endpoint}/api/v1/tags/update`, {
         path,
         path_tags: path_tags || []
       });
@@ -135,9 +139,9 @@ program
   .command('status')
   .description('Check service status')
   .action(async () => {
-    const { url } = program.opts();
+    const { endpoint } = program.opts();
     try {
-      const response = await axios.get(`${url}/api/v1/status`);
+      const response = await axios.get(`${endpoint}/api/v1/status`);
       console.log(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));

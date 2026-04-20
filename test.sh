@@ -3,7 +3,7 @@ set -e
 
 PORT=${1:-8000}
 API_URL="http://127.0.0.1:${PORT}"
-CLI="node cli/search-cli.js --url $API_URL"
+CLI="node src/search-cli.js --endpoint $API_URL"
 
 echo "=========================================="
 echo "1. Triggering Indexing"
