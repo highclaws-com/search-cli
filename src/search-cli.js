@@ -24,17 +24,23 @@ program
   .command('keyword-search [query]')
   .description('Perform fulltext search against local document with query keywords, based on Tantivy. Omitting the query performs a tag-only search.')
   .option('-t, --tags <tags...>', 'Filter by tags')
+  .option('-mg, --mtime-gte <timestamp>', 'Filter by modified time greater than or equal to', (val) => parseInt(val, 10))
+  .option('-ml, --mtime-lte <timestamp>', 'Filter by modified time less than or equal to', (val) => parseInt(val, 10))
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-length <length>', 'Snippet length', (val) => parseInt(val, 10), DEFAULT_LENGTH)
   .action(async (query, options) => {
     const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${endpoint}/api/v1/search/fts`, {
+      const payload = {
         query: query || "",
         tags: options.tags || null,
         limit: options.limit,
         snippet_length: options.snippetLength
-      });
+      };
+      if (options.mtimeGte !== undefined) payload.mtime_gte = options.mtimeGte;
+      if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
+
+      const response = await axios.post(`${endpoint}/api/v1/search/fts`, payload);
       console.log(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
@@ -46,17 +52,23 @@ program
   .command('semantic-search <query>')
   .description('Search local document chunks by semantics, the underlying system is based on pg_vector.')
   .option('-t, --tags <tags...>', 'Filter by tags')
+  .option('-mg, --mtime-gte <timestamp>', 'Filter by modified time greater than or equal to', (val) => parseInt(val, 10))
+  .option('-ml, --mtime-lte <timestamp>', 'Filter by modified time less than or equal to', (val) => parseInt(val, 10))
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-margin <margin>', 'Snippet margin', (val) => parseInt(val, 10), DEFAULT_MARGIN)
   .action(async (query, options) => {
     const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${endpoint}/api/v1/search/vec`, {
+      const payload = {
         query,
         tags: options.tags || null,
         limit: options.limit,
         snippet_margin: options.snippetMargin
-      });
+      };
+      if (options.mtimeGte !== undefined) payload.mtime_gte = options.mtimeGte;
+      if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
+
+      const response = await axios.post(`${endpoint}/api/v1/search/vec`, payload);
       console.log(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
@@ -68,19 +80,25 @@ program
   .command('search [query]')
   .description('Perform hybrid search against local document with Reciprocal Rank Fusion. Omitting the query performs a tag-only search using the keyword-search only.')
   .option('-t, --tags <tags...>', 'Filter by tags')
+  .option('-mg, --mtime-gte <timestamp>', 'Filter by modified time greater than or equal to', (val) => parseInt(val, 10))
+  .option('-ml, --mtime-lte <timestamp>', 'Filter by modified time less than or equal to', (val) => parseInt(val, 10))
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-margin <margin>', 'Snippet margin', (val) => parseInt(val, 10), DEFAULT_MARGIN)
   .option('-L, --snippet-length <length>', 'Snippet length', (val) => parseInt(val, 10), DEFAULT_LENGTH)
   .action(async (query, options) => {
     const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${endpoint}/api/v1/search/hybrid`, {
+      const payload = {
         query: query || "",
         tags: options.tags || null,
         limit: options.limit,
         snippet_margin: options.snippetMargin,
         snippet_length: options.snippetLength
-      });
+      };
+      if (options.mtimeGte !== undefined) payload.mtime_gte = options.mtimeGte;
+      if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
+
+      const response = await axios.post(`${endpoint}/api/v1/search/hybrid`, payload);
       console.log(JSON.stringify(response.data, null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));

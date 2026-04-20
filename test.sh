@@ -35,6 +35,10 @@ $CLI vector-search "loyal" --limit 2
 $CLI keyword-search --tags '[fts_chunk:2]' -- sadness
 $CLI search --tags '[filename:shakespeare.txt]' -- boat
 $CLI search --tags '[ext:.txt]' -- castle
+
+# with mtime pre-filter
+$CLI search "loyal" --mtime-gte $(date -d "2 days ago" +%s)
+$CLI search "boat" --mtime-gte $(date -d "1 month ago" +%s) --mtime-lte $(date -d "yesterday" +%s)
 set +x
 
 echo "=========================================="
