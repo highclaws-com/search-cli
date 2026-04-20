@@ -21,8 +21,8 @@ program
 
 
 program
-  .command('keyword-search <query>')
-  .description('Perform fulltext search against local document with query keywords, based on Tantivy.')
+  .command('keyword-search [query]')
+  .description('Perform fulltext search against local document with query keywords, based on Tantivy. Omitting the query performs a tag-only search.')
   .option('-t, --tags <tags...>', 'Filter by tags')
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-length <length>', 'Snippet length', (val) => parseInt(val, 10), DEFAULT_LENGTH)
@@ -30,7 +30,7 @@ program
     const { endpoint } = program.opts();
     try {
       const response = await axios.post(`${endpoint}/api/v1/search/fts`, {
-        query,
+        query: query || "",
         tags: options.tags || null,
         limit: options.limit,
         snippet_length: options.snippetLength
@@ -65,8 +65,8 @@ program
   });
 
 program
-  .command('search <query>')
-  .description('Perform hybrid search against local document with Reciprocal Rank Fusion.')
+  .command('search [query]')
+  .description('Perform hybrid search against local document with Reciprocal Rank Fusion. Omitting the query performs a tag-only search using the keyword-search only.')
   .option('-t, --tags <tags...>', 'Filter by tags')
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-margin <margin>', 'Snippet margin', (val) => parseInt(val, 10), DEFAULT_MARGIN)
@@ -75,7 +75,7 @@ program
     const { endpoint } = program.opts();
     try {
       const response = await axios.post(`${endpoint}/api/v1/search/hybrid`, {
-        query,
+        query: query || "",
         tags: options.tags || null,
         limit: options.limit,
         snippet_margin: options.snippetMargin,
