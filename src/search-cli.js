@@ -22,7 +22,7 @@ program
 
 program
   .command('keyword-search <query>')
-  .description('Full-text search')
+  .description('Perform fulltext search against local document with query keywords, based on Tantivy.')
   .option('-t, --tags <tags...>', 'Filter by tags')
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-length <length>', 'Snippet length', (val) => parseInt(val, 10), DEFAULT_LENGTH)
@@ -43,8 +43,8 @@ program
   });
 
 program
-  .command('vector-search <query>')
-  .description('Vector search')
+  .command('semantic-search <query>')
+  .description('Search local document chunks by semantics, the underlying system is based on pg_vector.')
   .option('-t, --tags <tags...>', 'Filter by tags')
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-margin <margin>', 'Snippet margin', (val) => parseInt(val, 10), DEFAULT_MARGIN)
@@ -66,7 +66,7 @@ program
 
 program
   .command('search <query>')
-  .description('Hybrid search')
+  .description('Perform hybrid search against local document with Reciprocal Rank Fusion.')
   .option('-t, --tags <tags...>', 'Filter by tags')
   .option('-l, --limit <limit>', 'Limit results', (val) => parseInt(val, 10), DEFAULT_LIMIT)
   .option('-s, --snippet-margin <margin>', 'Snippet margin', (val) => parseInt(val, 10), DEFAULT_MARGIN)
@@ -90,7 +90,7 @@ program
 
 program
   .command('index')
-  .description('Trigger full re-indexing')
+  .description('Trigger full re-indexing for the local document search engine.')
   .action(async () => {
     const { endpoint } = program.opts();
     try {
