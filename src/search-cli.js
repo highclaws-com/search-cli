@@ -153,12 +153,14 @@ tags
 tags
   .command('update <path> [path_tags...]')
   .description('Update tags for a specific file path')
-  .action(async (path, path_tags) => {
+  .option('-f, --force', 'Force tag update even if the path does not exist')
+  .action(async (path, path_tags, options) => {
     const { endpoint } = program.opts();
     try {
       const response = await axios.post(`${endpoint}/api/v1/tags/update`, {
         path,
-        path_tags: path_tags || []
+        path_tags: path_tags || [],
+        force: !!options.force
       });
       console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
