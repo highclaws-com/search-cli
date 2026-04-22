@@ -29,7 +29,7 @@ const defaultEndpoint = process.env.LOCAL_SEARCH_CLI_ENDPOINT
 
 program
   .name('search-cli')
-  .description('Local search CLI')
+  .description('Local search CLI\n\nHint: You can use the PATH_PREFIX environment variable to prioritize returned paths for a specific directory.\nExample: PATH_PREFIX=/disk-1 search-cli search "foo"')
   .version('1.0.0')
   .option('-e, --endpoint <endpoint>', 'Base URL of the search engine API', defaultEndpoint);
 
@@ -53,6 +53,7 @@ program
       };
       if (options.mtimeGte !== undefined) payload.mtime_gte = options.mtimeGte;
       if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
+      if (process.env.PATH_PREFIX) payload.path_prefix = process.env.PATH_PREFIX;
 
       const response = await axios.post(`${endpoint}/api/v1/search/fts`, payload);
       console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
@@ -81,6 +82,7 @@ program
       };
       if (options.mtimeGte !== undefined) payload.mtime_gte = options.mtimeGte;
       if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
+      if (process.env.PATH_PREFIX) payload.path_prefix = process.env.PATH_PREFIX;
 
       const response = await axios.post(`${endpoint}/api/v1/search/vec`, payload);
       console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
@@ -111,6 +113,7 @@ program
       };
       if (options.mtimeGte !== undefined) payload.mtime_gte = options.mtimeGte;
       if (options.mtimeLte !== undefined) payload.mtime_lte = options.mtimeLte;
+      if (process.env.PATH_PREFIX) payload.path_prefix = process.env.PATH_PREFIX;
 
       const response = await axios.post(`${endpoint}/api/v1/search/hybrid`, payload);
       console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
