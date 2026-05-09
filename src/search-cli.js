@@ -129,7 +129,7 @@ program
   .action(async () => {
     const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${endpoint}/api/v1/index_all`);
+      const response = await axios.post(`${endpoint}/api/v1/index`);
       console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
