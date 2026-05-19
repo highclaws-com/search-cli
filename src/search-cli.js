@@ -145,7 +145,9 @@ tags
   .action(async (paths) => {
     const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${endpoint}/api/v1/tags/lookup`, { paths });
+      const params = new URLSearchParams();
+      paths.forEach(path => params.append('paths', path));
+      const response = await axios.get(`${endpoint}/api/v1/tags`, { params });
       console.log(JSON.stringify(addMtimeReadable(response.data), null, 2));
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : (error.message || error.code || 'Unknown error'));
@@ -160,7 +162,7 @@ tags
   .action(async (path, path_tags, options) => {
     const { endpoint } = program.opts();
     try {
-      const response = await axios.post(`${endpoint}/api/v1/tags/update`, {
+      const response = await axios.put(`${endpoint}/api/v1/tags`, {
         path,
         path_tags: path_tags || [],
         force: !!options.force
