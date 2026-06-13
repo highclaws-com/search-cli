@@ -29,7 +29,7 @@ const defaultEndpoint = process.env.LOCAL_SEARCH_CLI_ENDPOINT
 
 program
   .name('search-cli')
-  .description('Local search CLI\n\nHint: You can use the PATH_PREFIX environment variable to prioritize returned paths for a specific directory.\nExample: PATH_PREFIX=/disk-1 search-cli search "foo"')
+  .description('Local search CLI\n\nHint: You can use the PATH_PREFIX environment variable to prioritize returned paths for a specific directory.\nExample: PATH_PREFIX=/folder-1 search-cli search "foo"')
   .version('1.0.0')
   .option('-e, --endpoint <endpoint>', 'Base URL of the search engine API', defaultEndpoint);
 
